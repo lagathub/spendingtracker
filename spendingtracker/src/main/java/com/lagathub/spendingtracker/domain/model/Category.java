@@ -28,7 +28,7 @@ public class Category {
 	@Column(nullable = false) //Required field
 	private LocalDateTime createdAt;
 	
-	//Desault constructor (JPA requires this)
+	//Default constructor (JPA requires this)
 	public Category () {
 		
 	}
