@@ -3,6 +3,8 @@ package com.lagathub.spendingtracker.domain.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
 
+@Entity
+@Table(name = "transactions")
 public class Transaction {
 	@Id //This field is the primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Auto increment
@@ -45,5 +49,69 @@ public class Transaction {
 			throw new IllegalArgumentException("Amount must be positive");
 		}
 	}
+	
+	//Default constructor (Jpa requires this)
+	public Transaction() {
+		
+	}
+	
+	//Constructor for creating new transactions
+	public Transaction (BigDecimal amount, Category category) {
+		this.amount = amount;
+		this.category = category;
+		this.createdAt = LocalDateTime.now();
+		validateAmount(); //validate on creation
+	}
+	
+	//Constructor with notes
+	public Transaction (BigDecimal amount, Category category, String note) {
+		this.amount = amount;
+		this.category = category;
+		this.note = note;
+		this.createdAt = LocalDateTime.now();
+		validateAmount(); //validate on creation
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	
+	//No setId() - ID is managed by database
+	
+	public BigDecimal getAmount() {
+		return amount;
+	}
+	
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+		validateAmount(); //Validate when setting
+	}
+	
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	
+	public void setCreatedAt() {
+		this.createdAt = LocalDateTime.now();
+	}
+	
+	public String getNote() {
+		return note;
+	}
+	
+	public void setNote(String note) {
+		this.note = note;
+	}
+	
+
 
 }
