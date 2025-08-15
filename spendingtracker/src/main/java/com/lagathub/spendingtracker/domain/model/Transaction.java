@@ -13,8 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
 
-@Entity
-@Table(name = "transactions")
+@Entity //This class maps to a database table
+@Table(name = "transactions") //Table name in PostgreSQL
 public class Transaction {
 	@Id //This field is the primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Auto increment
@@ -50,7 +50,7 @@ public class Transaction {
 		}
 	}
 	
-	//Default constructor (Jpa requires this)
+	//Default constructor (JPA requires this)
 	public Transaction() {
 		
 	}
@@ -72,6 +72,7 @@ public class Transaction {
 		validateAmount(); //validate on creation
 	}
 	
+	//Getters and setters
 	public Long getId() {
 		return id;
 	}

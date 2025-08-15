@@ -72,7 +72,7 @@ public class Category {
 		return createdAt;
 	}
 	
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt() {
 		this.createdAt = LocalDateTime.now();
 	}
 
