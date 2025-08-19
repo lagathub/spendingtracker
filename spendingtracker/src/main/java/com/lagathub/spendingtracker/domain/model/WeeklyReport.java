@@ -90,11 +90,23 @@ public class WeeklyReport {
 		return generatedAt;
 	}
 	
+	public void setGeneratedAt(LocalDateTime generatedAt) {
+		this.generatedAt = generatedAt;
+	}
+	
 	public List<CategorySpending> getCategoryBreakdowns() {
 		return categoryBreakdowns;
 	}
 	
-	//Add business logic methods: --still not sure of this implementation
+	public void setCategoryBreakdowns(List<CategorySpending> categoryBreakdowns) {
+		this.categoryBreakdowns = categoryBreakdowns;
+		//set bidirectional r/ship
+		if (categoryBreakdowns != null) {
+			categoryBreakdowns.forEach(breakdown -> breakdown.setWeeklyReport(this));
+		}
+	}
+	
+	//Add business logic methods: Helper method for adding individual breakdowns
 	public void addCategoryBreakdown(CategorySpending breakdown) {
 		this.categoryBreakdowns.add(breakdown);
 		breakdown.setWeeklyReport(this); //Maintain bidirectional r/ship
