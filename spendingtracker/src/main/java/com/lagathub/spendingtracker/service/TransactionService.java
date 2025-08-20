@@ -105,5 +105,22 @@ public class TransactionService {
         
         return transactionRepository.findByCreatedAtBetween(start, end);
     }
+    
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
+
+    public Transaction findById(Long id) {
+        return transactionRepository.findById(id)
+            .orElseThrow(() -> new InvalidTransactionException("Transaction not found with id: " + id));
+    }
+
+    public List<Transaction> searchTransactions(String categoryName, String note) {
+        if (note == null || note.trim().isEmpty()) {
+            return transactionRepository.findByCategoryName(categoryName);
+        }
+        // You'll need to add this method to your repository
+        return transactionRepository.findByCategoryNameAndNoteContaining(categoryName, note);
+    }
 	
 }

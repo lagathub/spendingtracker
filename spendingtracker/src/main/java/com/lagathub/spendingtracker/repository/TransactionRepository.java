@@ -24,6 +24,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	//Find transaction ordered by date(newest first)
 	List<Transaction> findAllByOrderByCreatedAtDesc();
 	
+	List<Transaction> findByCategoryNameAndNoteContaining(String categoryName, String note);
+	
 	
 	//custom JPQL queries (complex)
 	/*
