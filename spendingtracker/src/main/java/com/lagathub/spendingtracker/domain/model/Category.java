@@ -1,6 +1,8 @@
 package com.lagathub.spendingtracker.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 //JPA imports
 import jakarta.persistence.Entity;
@@ -9,6 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 
 
 @Entity //This class maps to a database table
@@ -27,6 +32,10 @@ public class Category {
 	
 	@Column(nullable = false) //Required field
 	private LocalDateTime createdAt;
+	
+	// Transactions relationship mapping
+	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Transaction> transactions = new ArrayList<>();
 	
 	//Default constructor (JPA requires this)
 	public Category () {
@@ -74,6 +83,26 @@ public class Category {
 	
 	public void setCreatedAt() {
 		this.createdAt = LocalDateTime.now();
+	}
+	
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+	
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+	
+	//Convenience method to add a transaction
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
+		transaction.setCategory(this);
+	}
+	
+	//Convenience method to remove a transaction
+	public void removeTransaction(Transaction transaction) {
+		transactions.remove(transaction);
+		transaction.setCategory(null);
 	}
 
 }
