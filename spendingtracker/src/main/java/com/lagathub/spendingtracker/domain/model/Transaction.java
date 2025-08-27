@@ -1,6 +1,7 @@
 package com.lagathub.spendingtracker.domain.model;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -29,6 +30,9 @@ public class Transaction {
 	
 	@Column(nullable = false) //Required field
 	private LocalDateTime createdAt;
+	
+	@Column
+	private LocalDateTime updatedAt;
 	
 	@Column(nullable = true) //Optional field
 	private String note;
@@ -60,6 +64,7 @@ public class Transaction {
 		this.amount = amount;
 		this.category = category;
 		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 		validateAmount(); //validate on creation
 	}
 	
@@ -69,6 +74,7 @@ public class Transaction {
 		this.category = category;
 		this.note = note;
 		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 		validateAmount(); //validate on creation
 	}
 	
@@ -82,9 +88,10 @@ public class Transaction {
 	public BigDecimal getAmount() {
 		return amount;
 	}
-	
+		
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+		this.updatedAt = LocalDateTime.now();
 		validateAmount(); //Validate when setting
 	}
 	
@@ -94,6 +101,7 @@ public class Transaction {
 	
 	public void setCategory(Category category) {
 		this.category = category;
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	
@@ -105,12 +113,27 @@ public class Transaction {
 		this.createdAt = LocalDateTime.now();
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+	
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
 	public String getNote() {
 		return note;
 	}
 	
 	public void setNote(String note) {
 		this.note = note;
+		this.updatedAt = LocalDateTime.now();
+	}
+	
+	public boolean wasRecentlyUpdated() {
+		return updatedAt != null && 
+				updatedAt.isAfter(createdAt) &&
+				Duration.between(updatedAt, LocalDateTime.now()).toMinutes() < 30;
 	}
 	
 

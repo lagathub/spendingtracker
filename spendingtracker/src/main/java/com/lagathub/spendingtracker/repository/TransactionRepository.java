@@ -1,6 +1,9 @@
 package com.lagathub.spendingtracker.repository;
 
 import com.lagathub.spendingtracker.domain.model.Transaction;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,6 +49,24 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	 */
 	@Query("SELECT t FROM Transaction t WHERE t.amount < :threshold ORDER BY t.createdAt DESC")
 	List<Transaction> findSmallTransactions(@Param("threshold") BigDecimal threshold);
+	
+	//complex filtering query
+	@Query("SELECT t FROM Transaction t WHERE " + 
+	       "(:category IS NULL OR t.category.name = :category) AND " +
+			"(:startDate IS NULL OR t.createdAt >= :startDate) AND " +
+	       "(:endDate IS NULL OR t.createdAt <= :endDate) " +
+			"ORDER BY t.createdAt DESC")
+	List<Transaction> findWithFilters(@Param("category") String category,
+			                          @Param("startDate") LocalDateTime startDate,
+			                          @Param("endDate") LocalDateTime endDate,
+			                          Pageable pageable);
+	
+	//Find transactions by category with pagination
+	Page<Transaction> findByCategoryNameOrderByCreatedAtDesc(String categoryName, Pageable pageable);
+	
+	//Find recent transactions (for dashboard)
+	@Query("SELECT COUNT(t) FROM Transaction t WHERE t.category.name = :categoryName")
+	Long countByCategoryName(@Param("categoryName") String categoryName);
 	
 	/*
 	 * Complex sorting - Multi-Level Organization

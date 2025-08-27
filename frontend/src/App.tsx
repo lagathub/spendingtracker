@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
 import { TransactionForm } from './components/forms/TransactionForm';
- //import { TransactionList } from './components/reports/TransactionList';
+import { TransactionList } from './components/reports/TransactionList';
 import { useTransactions } from './hooks/useTransactions';
 
 function App() {
   const {
-    //transactions,
+    transactions,
     categories,
     loading,
     error,
@@ -33,7 +33,7 @@ if (error) {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Spending Tracker</h1>
+        <h1>SpendingTracker</h1>
       </header>
 
       <main className="app-main">
@@ -44,10 +44,10 @@ if (error) {
 
           {loading && <div className="loading">Loading...</div>}
           
-          {/* <TransactionList
+          <TransactionList
              transactions={transactions}
              title="This Week's Expenses"
-             /> */}
+             />
       </main>
     </div>
   );

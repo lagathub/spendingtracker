@@ -2,13 +2,18 @@ package com.lagathub.spendingtracker.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import com.lagathub.spendingtracker.domain.model.Transaction;
 import com.lagathub.spendingtracker.service.TransactionService;
 import com.lagathub.spendingtracker.dto.request.TransactionRequest;
+import com.lagathub.spendingtracker.dto.response.TransactionResponse;
 import com.lagathub.spendingtracker.exception.TransactionNotFoundException;
 import com.lagathub.spendingtracker.exception.InvalidTransactionException;
 
@@ -24,11 +29,29 @@ public class SpendingController {
     }
     
     // Get all transactions
-    @GetMapping("/transactions")
+    @GetMapping("/transactions/all")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return ResponseEntity.ok(transactions);
     }
+    
+    //Get endpoint with pagination and filtering
+    @GetMapping("/transactions")
+    public ResponseEntity<List<TransactionResponse>> getTransactions(
+    		@RequestParam(defaultValue = "0") int page,
+    		@RequestParam(defaultValue = "50") int size,
+    		@RequestParam(required = false) String category,
+    		@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    		@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+    	
+    	List<Transaction> transactions = transactionService.getTransactions(page, size, category, startDate, endDate);
+    	List<TransactionResponse> responses = transactions.stream()
+    			.map(TransactionResponse::from)
+    			.collect(Collectors.toList());
+    	
+    	return ResponseEntity.ok(responses);
+    }
+    
     
     // Get transaction by ID with proper error handling
     @GetMapping("/transactions/{id}")
@@ -40,6 +63,7 @@ public class SpendingController {
             return ResponseEntity.notFound().build();
         }
     }
+    
     
     // Search with proper parameter handling
     @GetMapping("/transactions/search")
@@ -67,6 +91,29 @@ public class SpendingController {
         } catch (InvalidTransactionException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+    
+    //PUT endpoint for updating transactions
+    @PutMapping("/transactions/{id}")
+    public ResponseEntity<TransactionResponse> updateTransaction(
+    		@PathVariable Long id,
+    		@Valid @RequestBody TransactionRequest request) {
+    	
+    	Transaction updated = transactionService.updateTransaction(
+    			id,
+    			request.getAmount(),
+    			request.getCategoryName(),
+    			request.getNote()
+    			);
+    	TransactionResponse response = TransactionResponse.from(updated);
+    	return ResponseEntity.ok(response);
+    	}
+    
+    //DELETE endpoint for removing transactions
+    @DeleteMapping("/transactions/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+    	transactionService.deleteTransaction(id);
+    	return ResponseEntity.noContent().build();
     }
     
     // Useful endpoint for my weekly tracking

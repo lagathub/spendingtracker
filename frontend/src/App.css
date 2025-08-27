@@ -10,7 +10,7 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Barlow Condensed', sans-serif; 
 }
 
 .app-header {
@@ -129,7 +129,6 @@ body {
 }
 
 .amount {
-  font-weight: bold;
   font-size: 18px;
 }
 

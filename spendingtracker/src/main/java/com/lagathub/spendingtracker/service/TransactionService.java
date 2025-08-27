@@ -1,17 +1,25 @@
 package com.lagathub.spendingtracker.service;
 
 import java.math.BigDecimal;
+
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.time.DayOfWeek;
 
 import com.lagathub.spendingtracker.domain.model.Category;
 import com.lagathub.spendingtracker.domain.model.Transaction;
 import com.lagathub.spendingtracker.exception.InvalidTransactionException;
+import com.lagathub.spendingtracker.exception.ResourceNotFoundException;
 import com.lagathub.spendingtracker.repository.TransactionRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 
 @Service
@@ -27,7 +35,7 @@ public class TransactionService {
 		this.categoryService = categoryService;
 	}
 	
-	//Main operation: Record a new transaction
+	//Main method operation: Record a new transaction
 	public Transaction recordTransaction(BigDecimal amount, String categoryName, String note) {
 		
 		//Step 1: Validate input
@@ -41,6 +49,60 @@ public class TransactionService {
 		
 		//Step 4: Save and return
 		return transactionRepository.save(transaction);
+	}
+	
+	//Update existing transaction
+	public Transaction updateTransaction(Long id, BigDecimal amount, String categoryName, String note) {
+		//Validate amount
+		if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new InvalidTransactionException("Amount must be positive");
+		}
+		
+		//Find existing transaction
+		Transaction existingTransaction = transactionRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+		
+		//Find or create category
+		Category category = categoryService.findOrCreateCategory(categoryName);
+		
+		//Update fields
+		existingTransaction.setAmount(amount);
+		existingTransaction.setCategory(category);
+		existingTransaction.setNote(note);
+		existingTransaction.setUpdatedAt(LocalDateTime.now()); //Track when updated
+		
+		return transactionRepository.save(existingTransaction);
+	}
+	
+	//Delete transaction
+	public void deleteTransaction(Long id) {
+		Transaction transaction = transactionRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+		
+		transactionRepository.delete(transaction);
+	}
+	
+	//Get single transaction by ID
+	public Transaction getTransactionById(Long id) {
+		return transactionRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
+	}
+	
+	//Get transactions with filters and pagination
+	public List<Transaction> getTransactions(int page, int size, String category, LocalDate startDate, LocalDate endDate) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+		
+		//If no filters, return recent transactions
+		if (category == null && startDate == null && endDate == null) {
+			Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
+			return transactionPage.getContent();
+		}
+		
+		//Apply filters
+		LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+		LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
+		
+		return transactionRepository.findWithFilters(category, startDateTime, endDateTime, pageable);
 	}
 	
     // Validation helper - your validation logic is excellent!
