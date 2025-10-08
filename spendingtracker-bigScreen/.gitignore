@@ -1,0 +1,20 @@
+# Backend (Java/Spring Boot)
+spendingtracker/target/
+spendingtracker/*.jar
+spendingtracker/*.class
+spendingtracker/.idea/
+spendingtracker/*.iml
+spendingtracker/application-local.yml
+spendingtracker/application-secrets.yml
+
+# Frontend (Node.js)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+
+# General
+.DS_Store
+*.log
+.vscode/
