@@ -1,152 +1,98 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Caveat:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  background-color: #F5F5F5;
-  margin: 0;
-  padding: 0;
+/* Custom component classes using your existing styles */
+@layer components {
+  .transaction-form {
+    @apply bg-gray-100 p-5 rounded-lg mb-5;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-group label {
+    @apply block mb-1 font-medium;
+  }
+
+  .form-group input {
+    @apply w-1/2 p-2.5 text-lg border border-gray-300 rounded box-border font-caveat font-medium;
+  }
+
+  .submit-btn {
+    @apply bg-custom-green text-white py-3 px-7 border-none rounded text-base cursor-pointer w-1/4 hover:bg-custom-green-hover;
+  }
+
+  .transaction-list {
+    @apply bg-white border border-gray-300 rounded-lg p-5;
+  }
+
+  .list-header {
+    @apply flex justify-between items-center mb-4 border-b border-gray-200 pb-2.5;
+  }
+
+  .total {
+    @apply font-bold text-custom-green;
+  }
+
+  .transactions {
+    @apply list-none p-0 m-0;
+  }
+
+  .transaction-item {
+    @apply py-2.5 border-b border-gray-100;
+  }
+
+  .transaction-main {
+    @apply flex justify-between items-center;
+  }
+
+  .amount {
+    @apply text-lg;
+  }
+
+  .category {
+    @apply bg-gray-200 px-2 py-1 rounded text-sm;
+  }
+
+  .transaction-note {
+    @apply text-gray-600 text-xs mt-1;
+  }
+
+  .no-transactions {
+    @apply text-center text-gray-500 italic;
+  }
+
+  .app {
+    @apply max-w-4xl mx-auto p-5 font-barlow;
+  }
+
+  .app-header {
+    @apply text-center mb-8 font-barlow;
+  }
+
+  .app-header h1 {
+    @apply font-barlow font-semibold text-6xl m-0 p-0;
+  }
+
+  .app-header h2,
+  .app-header h3,
+  .app-header h4,
+  .app-header h5,
+  .app-header h6 {
+    @apply font-barlow font-semibold text-5xl m-0;
+  }
+
+  .app-main {
+    @apply grid gap-8;
+  }
 }
 
-.app {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Barlow Condensed', sans-serif; 
-}
-
-.app-header {
-  text-align: center;
-  margin-bottom: 30px;
-  font-family: 'Barlow Condensed', sans-serif; 
-}
-
-.app-header h1 {
-  font-family: 'Barlow Condensed', sans-serif !important;
-  font-weight: 600 !important; 
-  font-size: 4rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Apply Barlow Condensed to other header elements */
-.app-header h2,
-.app-header h3,
-.app-header h4,
-.app-header h5,
-.app-header h6 {
-  font-family: 'Barlow Condensed', sans-serif !important;
-  font-weight: 600 !important; 
-  font-size: 3rem !important;
-  margin: 0; 
-}
-
-
-.app-main {
-  display: grid;
-  gap: 30px;
-}
-
-/* Transaction Form Styles */
-.transaction-form {
-  background: #F5F5F5;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.form-group input {
-  width: 50%;
-  padding: 10px;
-  font-size: 1.1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-family: 'Caveat', cursive;
-  font-weight: 500;
-}
-
-.submit-btn {
-  background: #737d62;
-  color: white;
-  padding: 12px 30px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 25%;
-}
-
-.submit-btn:hover {
-  background: #7A7F75;
-}
-
-/* Transaction List Styles */
-.transaction-list {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.total {
-  font-weight: bold;
-  color: #737d62;
-}
-
-.transactions {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.transaction-item {
-  padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.transaction-main {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.amount {
-  font-size: 18px;
-}
-
-.category {
-  background: #e9ecef;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.transaction-note {
-  color: #666;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.no-transactions {
-  text-align: center;
-  color: #999;
-  font-style: italic;
+/* Base styles */
+@layer base {
+  body {
+    @apply bg-gray-100 m-0 p-0;
+  }
 }
